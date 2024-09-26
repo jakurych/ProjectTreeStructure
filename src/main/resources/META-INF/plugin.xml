@@ -28,4 +28,11 @@
     <extensions defaultExtensionNs="com.intellij">
 
     </extensions>
+    <actions>
+        <action id="org.example.projectstructuretree.ProjectTreeAction"
+                class="org.example.projectstructuretree.ProjectTreeAction" text="Project Structure Tree"
+                description="A simple plugin that displays directories and files within your project! Created to streamline the documentation process.">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
