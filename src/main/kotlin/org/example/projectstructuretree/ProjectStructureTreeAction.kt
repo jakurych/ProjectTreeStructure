@@ -13,7 +13,7 @@ class ProjectTreeAction : AnAction() {
         println(treeStructure)
     }
 
-    private fun buildProjectTree(dir: File, prefix: String = ""): String {
+    fun buildProjectTree(dir: File, prefix: String = ""): String {
         val ignoreDirs = listOf("build", ".gradle", ".idea")
         val builder = StringBuilder()
 

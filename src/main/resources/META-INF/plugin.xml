@@ -27,6 +27,12 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
 
+        <toolWindow id="Project Structure Tree"
+                    factoryClass="org.example.projectstructuretree.ProjectStructureTreeWindowFactory"
+                    anchor="right"
+                    icon="/icons/project_structure_tree_icon.png"/>
+
+
     </extensions>
     <actions>
         <action id="org.example.projectstructuretree.ProjectTreeAction"
