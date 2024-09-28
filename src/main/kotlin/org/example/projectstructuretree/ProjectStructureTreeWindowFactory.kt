@@ -6,7 +6,6 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.content.ContentFactory
 import java.awt.BorderLayout
-import java.awt.event.ActionEvent
 import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.JTextArea

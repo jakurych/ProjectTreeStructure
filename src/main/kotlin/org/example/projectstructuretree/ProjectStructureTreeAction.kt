@@ -14,16 +14,28 @@ class ProjectTreeAction : AnAction() {
     }
 
     fun buildProjectTree(dir: File, prefix: String = ""): String {
-        val ignoreDirs = listOf("build", ".gradle", ".idea")
         val builder = StringBuilder()
 
-        dir.listFiles()?.filter { it.isDirectory && !ignoreDirs.contains(it.name) }?.forEach { subdir ->
-            builder.append(prefix).append("├── ").append(subdir.name).append("\n")
-            builder.append(buildProjectTree(subdir, "$prefix│   "))
+        val srcDir = File(dir, "src") //tree start
+        if (srcDir.exists() && srcDir.isDirectory) {
+            builder.append(prefix).append("├── ").append("src").append("\n")
+            builder.append(buildTreeRecursively(srcDir, "$prefix│   "))
         }
 
-        dir.listFiles()?.filter { it.isFile }?.forEach { file ->
-            builder.append(prefix).append("├── ").append(file.name).append("\n")
+        return builder.toString()
+    }
+
+    private fun buildTreeRecursively(dir: File, prefix: String): String {
+        val builder = StringBuilder()
+
+        dir.listFiles()?.sortedWith(compareBy({ !it.isDirectory }, { it.name }))?.forEach { file ->
+            if (file.isDirectory) {
+                //wyświetl
+                builder.append(prefix).append("├── ").append(file.name).append("\n")
+                builder.append(buildTreeRecursively(file, "$prefix│   "))
+            } else {
+                builder.append(prefix).append("├── ").append(file.name).append("\n")
+            }
         }
 
         return builder.toString()
