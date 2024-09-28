@@ -12,8 +12,12 @@ import javax.swing.JTextArea
 import java.io.File
 import java.awt.datatransfer.StringSelection
 import java.awt.Toolkit
+import javax.swing.JCheckBox
+import javax.swing.JOptionPane
 
 class ProjectStructureTreeWindowFactory : ToolWindowFactory {
+    private val filters = ProjectStructureTreeFilters()
+
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val contentFactory = ContentFactory.getInstance()
         val content = contentFactory.createContent(createProjectTreePanel(project), "", false)
@@ -24,12 +28,13 @@ class ProjectStructureTreeWindowFactory : ToolWindowFactory {
         val panel = JPanel(BorderLayout())
         val textArea = JTextArea()
         val projectPath = project.basePath ?: ""
-        textArea.text = ProjectTreeAction().buildProjectTree(File(projectPath))
+        val projectTreeAction = ProjectTreeAction().apply { setFilters(filters) }
+        textArea.text = projectTreeAction.buildProjectTree(File(projectPath))
         textArea.isEditable = false
 
         val regenerateButton = JButton("Generate again")
         regenerateButton.addActionListener {
-            textArea.text = ProjectTreeAction().buildProjectTree(File(projectPath))
+            textArea.text = projectTreeAction.buildProjectTree(File(projectPath))
         }
 
         val copyButton = JButton("Copy")
@@ -39,13 +44,38 @@ class ProjectStructureTreeWindowFactory : ToolWindowFactory {
             clipboard.setContents(stringSelection, null)
         }
 
+        val filtersButton = JButton("Filters")
+        filtersButton.addActionListener {
+            showFiltersDialog()
+            textArea.text = projectTreeAction.buildProjectTree(File(projectPath))
+        }
+
         val buttonPanel = JPanel()
         buttonPanel.add(regenerateButton)
         buttonPanel.add(copyButton)
+        buttonPanel.add(filtersButton)
 
         panel.add(JBScrollPane(textArea), BorderLayout.CENTER)
         panel.add(buttonPanel, BorderLayout.SOUTH)
         return panel
     }
-}
 
+    private fun showFiltersDialog() {
+        val filesFirstCheckbox = JCheckBox("Show files first", filters.showFilesFirst)
+        val options = arrayOf<Any>("OK", "Cancel")
+        val result = JOptionPane.showOptionDialog(
+            null,
+            filesFirstCheckbox,
+            "Filters",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            options,
+            options[0]
+        )
+
+        if (result == 0) {
+            filters.showFilesFirst = filesFirstCheckbox.isSelected
+        }
+    }
+}
